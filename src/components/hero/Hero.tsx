@@ -2,7 +2,7 @@ import { ArrowUpRight, ScanSearch, Sparkles } from "lucide-react";
 import { resumes } from "../../constants";
 import ResumeCard from "../resume/ResumeCard";
 import { usePuterStore } from "../../lib/puter";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
 export default function Hero() {
@@ -10,22 +10,11 @@ export default function Hero() {
   const navigate = useNavigate();
 
   useEffect(() => {
-   if (!auth.isAuthenticated) navigate("/auth");
+    if (!auth.isAuthenticated) navigate("/auth");
   }, [auth.isAuthenticated]);
+
   return (
-    <section className="relative min-h-screen overflow-hidden bg-slate-50 px-4 pb-20 pt-32 text-slate-900">
-      <div className="pointer-events-none absolute left-1/2 top-1/3 h-125 w-175 -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-400/10 blur-[140px]" />
-      <div className="pointer-events-none absolute bottom-0 left-1/2 h-75 w-225 -translate-x-1/2 rounded-full bg-indigo-400/10 blur-[120px]" />
-
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.04]"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(0,0,0,.8) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,.8) 1px, transparent 1px)",
-          backgroundSize: "70px 70px",
-        }}
-      />
-
+    <section className="pt-10">
       <div className="relative z-10 mx-auto flex max-w-6xl flex-col items-center">
         <div className="mb-7 flex items-center gap-2 rounded-full border border-slate-200 bg-white/70 px-3 py-1.5 shadow-xs backdrop-blur-md">
           <Sparkles size={13} className="text-blue-600" strokeWidth={1.8} />
@@ -54,7 +43,7 @@ export default function Hero() {
         </div>
 
         <div className="mt-9 flex flex-col items-center gap-3 sm:flex-row">
-          <button className="group flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-3 text-sm font-medium text-white shadow-md transition-all duration-300 hover:scale-[1.02] hover:bg-slate-800 hover:shadow-lg">
+          <Link to={"/upload"} className="group flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-3 text-sm font-medium text-white shadow-md transition-all duration-300 hover:scale-[1.02] hover:bg-slate-800 hover:shadow-lg">
             <ScanSearch size={16} />
 
             <span>Analyze my resume</span>
@@ -63,7 +52,7 @@ export default function Hero() {
               size={15}
               className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
             />
-          </button>
+          </Link>
         </div>
       </div>
 

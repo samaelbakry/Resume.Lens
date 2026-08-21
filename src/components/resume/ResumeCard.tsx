@@ -11,9 +11,7 @@ interface ResumeCardProps {
   resume: Resume;
 }
 
-export default function ResumeCard({
-  resume: { companyName, jobTitle, imagePath, resumePath, feedback },
-}: ResumeCardProps) {
+export default function ResumeCard({ resume: { companyName, jobTitle, imagePath, resumePath, feedback }}: ResumeCardProps) {
   return (
     <article className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:bg-white hover:shadow-md">
       <div className="relative aspect-16/10 overflow-hidden rounded-xl border border-slate-200/80 bg-slate-100">

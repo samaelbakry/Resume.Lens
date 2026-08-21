@@ -84,7 +84,7 @@ export default function Navbar() {
             
 
             <Link
-              to="/analyze"
+              to="/upload"
               className="group relative flex items-center gap-2 overflow-hidden rounded-xl bg-slate-900 px-4 py-2.5 text-[13px] font-medium text-white shadow-md transition-all duration-300 hover:bg-slate-800 hover:shadow-lg"
             >
               <Sparkles
@@ -93,7 +93,7 @@ export default function Navbar() {
                 className="text-blue-400 transition-transform duration-300 group-hover:rotate-12"
               />
 
-              <span>Analyze</span>
+              <span>Upload</span>
 
               <ArrowUpRight
                 size={14}
