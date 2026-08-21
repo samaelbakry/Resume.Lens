@@ -13,6 +13,7 @@
     "@heyputer/puter.js": "^2.6.1",
     "axios": "^1.19.0",
     "lucide-react": "^1.31.0",
+    "pdfjs-dist": "^6.2.108",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-dropzone": "^20.1.1",
