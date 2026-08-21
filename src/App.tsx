@@ -5,6 +5,7 @@ import MainLayout from "./components/layout/MainLayout";
 import { usePuterStore } from "./lib/puter";
 import Auth from "./pages/Auth";
 import Upload from "./pages/Upload";
+import ResumeAnalysisView from "./components/resume/ResumeAnalysisView";
 
 const App = () => {
   const {init} = usePuterStore()
@@ -19,7 +20,8 @@ const App = () => {
       children: [
         { index: true, element: <Hero /> },
         { path: "/home", element: <Hero /> },
-        {path:"/upload" , element:<Upload/>}
+        {path:"/upload" , element:<Upload/>},
+        {path:"/resumeAnalysisView" , element:<ResumeAnalysisView/>}
       ],
     },
     {path:"auth" , element:<Auth/>}

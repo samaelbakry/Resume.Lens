@@ -15,7 +15,7 @@ export default function Navbar() {
 
   return (
     <header className="fixed top-0 left-0 z-50 w-full px-4 pt-4">
-      <nav className="relative mx-auto max-w-6xl">
+      <nav className="relative mx-auto max-w-7xl">
         <div className="flex h-17 items-center justify-between rounded-2xl border border-slate-200/80 bg-white/80 px-3 pl-5 shadow-lg shadow-slate-900/5 backdrop-blur-2xl">
           <Link to="/" className="group flex items-center gap-3">
             <div className="hidden sm:block">

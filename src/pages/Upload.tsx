@@ -10,102 +10,122 @@ import {
 import { usePuterStore } from "../lib/puter";
 import { convertPdfToImage, generateUUID } from "../lib/utili";
 import { prepareInstructions } from "../constants";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
- companyName: string;
-    jobTitle: string;
-    jobDescription: string;
-    file: File
+  companyName: string;
+  jobTitle: string;
+  jobDescription: string;
+  file: File;
 }
 
 export default function Upload() {
-  const { auth, isLoading, ai, fs, kv } = usePuterStore();
+  const { ai, fs, kv } = usePuterStore();
   const [isProccessing, setIsProccessing] = useState(false);
   const [staticText, setStaticText] = useState("");
+  const navigate = useNavigate();
   const [file, setFile] = useState<File | null>(null);
 
- const handleAnalyze = async ({companyName,jobTitle,jobDescription,file}: Props) => {
-  try {
-    setIsProccessing(true);
+  const handleAnalyze = async ({
+    companyName,
+    jobTitle,
+    jobDescription,
+    file,
+  }: Props) => {
+    try {
+      setIsProccessing(true);
 
-    setStaticText("Uploading your file..");
+      setStaticText("Starting analysis workflow...");
 
-    const uploadedFile = await fs.upload([file]);
+      const uploadedFile = await fs.upload([file]);
 
-    if (!uploadedFile) {
-      setStaticText("Failed to upload file");
-      return;
-    }
+      if (!uploadedFile) {
+        setStaticText("Failed to upload file");
+        return;
+      }
 
-    setStaticText("Converting your file...");
+      setStaticText("File uploaded successfully. Initializing conversion...");
 
-    const converted = await convertPdfToImage(file);
+      const converted = await convertPdfToImage(file);
+      setStaticText("Converting your file...");
 
+      if (!converted.file) {
+        setStaticText(converted.error || "Failed to convert PDF to image");
+        return;
+      }
 
-// console.log("🔄 PDF conversion result:", converted);
-// console.log("📄 Original file:", file);
-// console.log("🖼️ Converted file:", converted.file);
-// console.log("❌ Conversion error:", converted.error);
+      setStaticText("Conversion successful. Processing image preview...");
 
-    if (!converted.file) {
-      setStaticText(converted.error || "Failed to convert PDF to image");
-      return;
-    }
+      const uploadedImage = await fs.upload([converted.file]);
 
-    setStaticText("Uploading your image...");
+      if (!uploadedImage) {
+        setStaticText("Failed to upload image");
+        return;
+      }
 
-    const uploadedImage = await fs.upload([converted.file]);
+      setStaticText("Image uploaded successfully.");
 
-    if (!uploadedImage) {
-      setStaticText("Failed to upload image");
-      return;
-    }
+      setStaticText("Preparing Data..");
 
-    setStaticText("Preparing Data");
+      const uuid = generateUUID();
 
-    const uuid = generateUUID();
-
-    const data = {
-      id: uuid,
-      resumePath: uploadedFile.path,
-      imagePath: uploadedImage.path,
-      companyName,
-      jobTitle,
-      jobDescription,
-      feedback: "",
-    };
-
-    await kv.set(`resume:${uuid}`, JSON.stringify(data));
-
-    setStaticText("Analyzing...");
-  
-    const feedback = await ai.feedback(
-      uploadedFile.path,
-      prepareInstructions({
+      const data = {
+        id: uuid,
+        resumePath: uploadedFile.path,
+        imagePath: uploadedImage.path,
+        companyName,
         jobTitle,
         jobDescription,
-      })
-    );
+        feedback: "",
+      };
 
-    if (!feedback) {
-      setStaticText("Failed to analyze");
-      return;
+      await kv.set(`resume:${uuid}`, JSON.stringify(data));
+
+      setStaticText("Analyzing...");
+      setStaticText("Sending data to AI model...");
+
+      const feedback = await ai.feedback(
+        uploadedFile.path,
+        prepareInstructions({
+          jobTitle,
+          jobDescription,
+        }),
+      );
+
+      if (!feedback) {
+        setStaticText("Failed to analyze");
+        return;
+      }
+
+      setStaticText("AI response received. Processing feedback...");
+
+      const content = feedback.message.content;
+
+      const feedbackText = typeof content === "string" ? content : content.find((item) => item.type === "text")?.text;
+      if (!feedbackText) {
+        console.log("No text content found:", content);
+        setStaticText("AI returned an empty response");
+      }
+
+      data.feedback = JSON.parse(feedbackText);
+
+      await kv.set(`resume:${uuid}`, JSON.stringify(data));
+
+      setStaticText("Analysis completed!");
+
+      console.log(data);
+      navigate("/resumeAnalysisView", {
+        state: {
+          resume: data,
+        },
+      });
+    } catch (error) {
+      console.error("Analyze error:", error);
+      setStaticText("Something went wrong");
+    } finally {
+      setIsProccessing(false);
     }
-
-    const feedbackText = typeof feedback.message.content === "string"? feedback.message.content: feedback.message.content[0].text;
-
-    data.feedback = JSON.parse(feedbackText);
-
-    await kv.set(`resume:${uuid}`, JSON.stringify(data));
-
-    setStaticText("Analysis completed!");
-  } catch (error) {
-    console.error("Analyze error:", error);
-    setStaticText("Something went wrong");
-  } finally {
-    setIsProccessing(false);
-  }
-};
+  };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

@@ -13,7 +13,6 @@ export async function convertPdfToImage(
   file: File
 ): Promise<PdfConversionResult> {
   try {
-    console.log("🚀 Starting PDF conversion...");
 
     const arrayBuffer = await file.arrayBuffer();
 
@@ -21,11 +20,8 @@ export async function convertPdfToImage(
       data: arrayBuffer,
     }).promise;
 
-    console.log("✅ PDF loaded");
 
     const page = await pdf.getPage(1);
-
-    console.log("✅ Page loaded");
 
     const viewport = page.getViewport({
       scale: 4,
@@ -55,7 +51,6 @@ export async function convertPdfToImage(
       viewport,
     }).promise;
 
-    console.log("✅ PDF page rendered");
 
     return new Promise((resolve) => {
       canvas.toBlob(
@@ -83,7 +78,6 @@ export async function convertPdfToImage(
             }
           );
 
-          console.log("✅ Image created:", imageFile);
 
           resolve({
             imageUrl: URL.createObjectURL(blob),
@@ -94,7 +88,7 @@ export async function convertPdfToImage(
       );
     });
   } catch (err) {
-    console.error("❌ PDF conversion error:", err);
+    console.error("PDF conversion error:", err);
 
     return {
       imageUrl: "",
