@@ -1,23 +1,18 @@
-export interface ResumeAnalysis {
-  id: string;
-  resumePath: string;
-  imagePath: string;
-  companyName: string;
-  jobTitle: string;
-  jobDescription: string;
-  feedback: unknown;
+export interface ResumeTip {
+  type: string;
+  tip: string;
 }
 
-export interface FeedbackCategory {
+export interface ResumeCategory {
   score: number;
-  tips: string[];
+  tips: ResumeTip[];
 }
 
 export interface ResumeFeedback {
   overallScore: number;
-  structure: FeedbackCategory;
-  toneAndStyle: FeedbackCategory;
-  ATS: FeedbackCategory;
-  content: FeedbackCategory;
-  skills: FeedbackCategory;
+  ATS: ResumeCategory;
+  content: ResumeCategory;
+  skills: ResumeCategory;
+  experience: ResumeCategory;
+  formatting: ResumeCategory;
 }
